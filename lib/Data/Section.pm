@@ -194,7 +194,11 @@ sub _mk_reader_group {
 
     my $template = $stash{ $pkg } = { };
 
-    my $dh = do { no strict 'refs'; \*{"$pkg\::DATA"} }; ## no critic Strict
+    my $dh = do {
+        no strict 'refs'; ## no critic Strict
+        no warnings 'once';
+        \*{"$pkg\::DATA"}
+    };
     return $stash{ $pkg } unless defined fileno *$dh;
     binmode( $dh, ":raw :bytes" );
 
